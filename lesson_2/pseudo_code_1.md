@@ -1,0 +1,19 @@
+1. a method that returns the sum of two integers:
+
+Casual:
+
+Given two integers.
+Take both integers as arguments to a method.
+Save the value of adding the two integers.
+Return the saved value.
+
+
+Formal:
+
+START
+
+# Given two integers.
+
+SET sum = value of adding the two integers.
+PRINT sum
+END
