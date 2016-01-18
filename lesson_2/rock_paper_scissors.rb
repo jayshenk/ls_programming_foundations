@@ -4,6 +4,11 @@ HIERARCHY = { 'rock' => %w(scissors lizard),
               'scissors' => %w(paper lizard),
               'lizard' => %w(paper spock),
               'spock' => %w(scissors rock) }
+LETTER = { 'r' => 'rock',
+           'p' => 'paper',
+           'l' => 'lizard',
+           'c' => 'scissors',
+           'v' => 'spock' }
 
 def prompt(message)
   Kernel.puts("=> #{message}")
@@ -28,6 +33,17 @@ loop do
   loop do
     prompt("Choose one: #{VALID_CHOICES.join(', ')}")
     choice = Kernel.gets().chomp()
+
+    while choice.length == 1
+      if LETTER.include?(choice)
+        choice = LETTER[choice]
+      elsif choice == 's'
+      prompt("Did you mean scissors or spock? Type 'c' for scissors or 'v' for spock.")
+      choice = Kernel.gets().chomp()
+      else
+        break
+      end
+    end
 
     if VALID_CHOICES.include?(choice)
       break
