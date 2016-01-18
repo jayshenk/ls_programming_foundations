@@ -1,13 +1,16 @@
-VALID_CHOICES = %w(rock paper scissors)
+VALID_CHOICES = %w(rock paper scissors lizard spock)
+HIERARCHY = { 'rock' => %w(scissors lizard),
+              'paper' => %w(rock spock),
+              'scissors' => %w(paper lizard),
+              'lizard' => %w(paper spock),
+              'spock' => %w(scissors rock) }
 
 def prompt(message)
   Kernel.puts("=> #{message}")
 end
 
 def win?(first, second)
-  (first == 'rock' && second == 'scissors') ||
-    (first == 'paper' && second == 'rock') ||
-    (first == 'scissors' && second == 'paper')
+  HIERARCHY[first].include?(second)
 end
 
 def display_results(player, computer)
