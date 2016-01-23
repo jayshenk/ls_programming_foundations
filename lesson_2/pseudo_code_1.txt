@@ -12,7 +12,7 @@ Formal:
 
 START
 
-# Given two integers.
+Given two integers.
 
 SET sum = value of adding the two integers.
 PRINT sum
