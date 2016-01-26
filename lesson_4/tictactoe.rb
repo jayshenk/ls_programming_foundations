@@ -29,6 +29,10 @@ def display_board(brd)
 end
 # rubocop:enable Metrics/AbcSize
 
+def display_score(player_points, computer_points, draws)
+  prompt "Player Score: #{player_points}, Computer Score: #{computer_points}, Ties: #{draws}."
+end
+
 def initialize_board
   new_board = {}
   (1..9).each { |num| new_board[num] = INITIAL_MARKER }
@@ -39,10 +43,15 @@ def empty_squares(brd)
   brd.keys.select { |num| brd[num] == INITIAL_MARKER }
 end
 
+def joinor(arr, delimiter=', ', word='or')
+  arr[-1] = "#{word} #{arr.last}" if arr.size > 1
+  arr.join(delimiter)
+end
+
 def player_places_piece!(brd)
   square = ''
   loop do
-    prompt "Choose a square (#{empty_squares(brd).join(', ')}):"
+    prompt "Choose a square (#{joinor(empty_squares(brd))}):"
     square = gets.chomp.to_i
     break if empty_squares(brd).include?(square)
     prompt "Sorry, that's not a valid choice."
@@ -75,6 +84,10 @@ def detect_winner(brd)
   nil
 end
 
+player_score = 0
+computer_score = 0
+ties = 0
+
 loop do
   board = initialize_board
 
@@ -92,11 +105,27 @@ loop do
 
   if someone_won?(board)
     prompt "#{detect_winner(board)} won!"
+    if detect_winner(board) == 'Player'
+      player_score += 1
+    else
+      computer_score += 1
+    end
   else
     prompt "It's a tie!"
+    ties += 1
   end
 
-  prompt "Play again? (y or n)"
+  display_score(player_score, computer_score, ties)
+
+  if player_score == 5
+    prompt("You are the overall winner!")
+    break
+  elsif computer_score == 5
+    prompt("The computer is the overall winner!")
+    break
+  end
+
+  prompt "Ready for the next round?"
   answer = gets.chomp
   break unless answer.downcase.start_with?('y')
 end
