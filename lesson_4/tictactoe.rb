@@ -6,6 +6,7 @@ WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
 INITIAL_MARKER = ' '
 PLAYER_MARKER = 'X'
 COMPUTER_MARKER = 'O'
+GOES_FIRST = 'choose'
 
 def prompt(msg)
   puts "=> #{msg}"
@@ -73,17 +74,24 @@ end
 def computer_places_piece!(brd)
   square = nil
 
-  # defense first
+  # offense first
   WINNING_LINES.each do |line|
-    square = find_at_risk_square(line, brd, PLAYER_MARKER)
+    square = find_at_risk_square(line, brd, COMPUTER_MARKER)
     break if square
   end
 
-  # offense
+  # defense
   if !square
     WINNING_LINES.each do |line|
-      square = find_at_risk_square(line, brd, COMPUTER_MARKER)
+      square = find_at_risk_square(line, brd, PLAYER_MARKER)
       break if square
+    end
+  end
+
+  # pick square 5
+  if !square
+    if brd[5] == INITIAL_MARKER
+      square = 5
     end
   end
 
@@ -118,17 +126,40 @@ player_score = 0
 computer_score = 0
 ties = 0
 
+choice = ''
+if GOES_FIRST == 'choose'
+  loop do
+    prompt "Who will go first, the player or the computer? Enter p for player or c for computer"
+    choice = gets.chomp.downcase
+    if choice == 'p' || choice == 'c'
+      break
+    else
+      prompt "That's not a valid choice"
+    end
+  end
+end
+
 loop do
   board = initialize_board
 
   loop do
     display_board(board)
 
-    player_places_piece!(board)
-    break if someone_won?(board) || board_full?(board)
+    if GOES_FIRST == 'computer' || choice == 'c'
+      computer_places_piece!(board)
+      break if someone_won?(board) || board_full?(board)
 
-    computer_places_piece!(board)
-    break if someone_won?(board) || board_full?(board)
+      display_board(board)
+
+      player_places_piece!(board)
+      break if someone_won?(board) || board_full?(board)
+    else
+      player_places_piece!(board)
+      break if someone_won?(board) || board_full?(board)
+
+      computer_places_piece!(board)
+      break if someone_won?(board) || board_full?(board)
+    end
   end
 
   display_board(board)
