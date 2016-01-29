@@ -1,5 +1,3 @@
-require 'pry'
-
 WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
                 [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # cols
                 [[1, 5, 9], [3, 5, 7]]              # diagonals
@@ -103,6 +101,22 @@ def computer_places_piece!(brd)
   brd[square] = COMPUTER_MARKER
 end
 
+def place_piece!(brd, current_player)
+  if current_player == 'player'
+    player_places_piece!(brd)
+  else
+    computer_places_piece!(brd)
+  end
+end
+
+def alternate_player(current_player)
+  if current_player == 'player'
+    'computer'
+  else
+    'player'
+  end
+end
+
 def board_full?(brd)
   empty_squares(brd).empty?
 end
@@ -126,15 +140,19 @@ player_score = 0
 computer_score = 0
 ties = 0
 
-choice = ''
+current_player = 'player'
 if GOES_FIRST == 'choose'
   loop do
-    prompt "Who will go first, the player or the computer? Enter p for player or c for computer"
+    prompt "Who will go first, the player or the computer? Enter p for player or c for computer."
     choice = gets.chomp.downcase
-    if choice == 'p' || choice == 'c'
+    if choice.start_with?('p')
+      current_player = 'player'
+      break
+    elsif choice.start_with?('c')
+      current_player = 'computer'
       break
     else
-      prompt "That's not a valid choice"
+      prompt "That's not a valid choice."
     end
   end
 end
@@ -144,22 +162,10 @@ loop do
 
   loop do
     display_board(board)
-
-    if GOES_FIRST == 'computer' || choice == 'c'
-      computer_places_piece!(board)
-      break if someone_won?(board) || board_full?(board)
-
-      display_board(board)
-
-      player_places_piece!(board)
-      break if someone_won?(board) || board_full?(board)
-    else
-      player_places_piece!(board)
-      break if someone_won?(board) || board_full?(board)
-
-      computer_places_piece!(board)
-      break if someone_won?(board) || board_full?(board)
-    end
+    place_piece!(board, current_player)
+    display_board(board)
+    current_player = alternate_player(current_player)
+    break if someone_won?(board) || board_full?(board)
   end
 
   display_board(board)
