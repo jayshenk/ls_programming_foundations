@@ -114,11 +114,12 @@ loop do
     break if player_turn == 's' || busted?(player_cards)
   end
 
+  player_total = total(player_cards)
   if busted?(player_cards)
     display_result(player_cards, dealer_cards)
     play_again? ? next : break
   else
-    prompt "You stayed at #{total(player_cards)}"
+    prompt "You stayed at #{player_total}"
   end
 
   # dealer turn
@@ -132,18 +133,19 @@ loop do
     prompt "Dealer's cards are now: #{dealer_cards}"
   end
 
+  dealer_total = total(dealer_cards)
   if busted?(dealer_cards)
-    prompt "Dealer total is now: #{total(dealer_cards)}"
+    prompt "Dealer total is now: #{dealer_total}"
     display_result(player_cards, dealer_cards)
     play_again? ? next : break
   else
-    prompt "Dealer stays at #{total(dealer_cards)}"
+    prompt "Dealer stays at #{dealer_total}"
   end
 
   # both player and dealer stay - compare cards!
   puts "=============="
-  prompt "Dealer has #{dealer_cards}, for a total of: #{total(dealer_cards)}"
-  prompt "Player has #{player_cards}, for a total of: #{total(player_cards)}"
+  prompt "Dealer has #{dealer_cards}, for a total of: #{dealer_total}"
+  prompt "Player has #{player_cards}, for a total of: #{player_total}"
   puts "=============="
 
   display_result(player_cards, dealer_cards)
