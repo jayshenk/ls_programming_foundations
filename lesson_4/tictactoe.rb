@@ -197,4 +197,4 @@ loop do
   break unless answer.downcase.start_with?('y')
 end
 
-prompt "Thanks for playing Tic Tac Toe! Good bye!"
+prompt "Thanks for playing Tic Tac Toe! Goodbye!"
