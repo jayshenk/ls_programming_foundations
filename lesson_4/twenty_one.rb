@@ -53,7 +53,7 @@ def detect_result(player_cards, dealer_cards)
   end
 end
 
-def display_results(player_cards, dealer_cards)
+def display_result(player_cards, dealer_cards)
   result = detect_result(player_cards, dealer_cards)
 
   case result
