@@ -70,6 +70,13 @@ def display_result(player_cards, dealer_cards)
   end
 end
 
+def display_table(player_cards, dealer_cards)
+  puts "=============="
+  prompt "Dealer has #{dealer_cards}, for a total of: #{total(dealer_cards)}"
+  prompt "Player has #{player_cards}, for a total of: #{total(player_cards)}"
+  puts "=============="
+end
+
 def play_again?
   puts "-------------"
   prompt "Do you want to play again? (y or n)"
@@ -116,6 +123,7 @@ loop do
 
   player_total = total(player_cards)
   if busted?(player_cards)
+    display_table(player_cards, dealer_cards)
     display_result(player_cards, dealer_cards)
     play_again? ? next : break
   else
@@ -136,6 +144,7 @@ loop do
   dealer_total = total(dealer_cards)
   if busted?(dealer_cards)
     prompt "Dealer total is now: #{dealer_total}"
+    display_table(player_cards, dealer_cards)
     display_result(player_cards, dealer_cards)
     play_again? ? next : break
   else
@@ -143,11 +152,7 @@ loop do
   end
 
   # both player and dealer stay - compare cards!
-  puts "=============="
-  prompt "Dealer has #{dealer_cards}, for a total of: #{dealer_total}"
-  prompt "Player has #{player_cards}, for a total of: #{player_total}"
-  puts "=============="
-
+  display_table(player_cards, dealer_cards)
   display_result(player_cards, dealer_cards)
 
   break unless play_again?
