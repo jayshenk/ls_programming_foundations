@@ -85,7 +85,7 @@ def score_result(player_cards, dealer_cards, score)
     score[:dealer] += 1
   when :tie
     score[:ties] += 1
-  end    
+  end
 end
 
 def display_score(score)
