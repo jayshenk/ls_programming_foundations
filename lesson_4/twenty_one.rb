@@ -1,3 +1,5 @@
+require 'pry'
+
 SUITS = ['H', 'D', 'C', 'S']
 VALUES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
 
@@ -70,11 +72,51 @@ def display_result(player_cards, dealer_cards)
   end
 end
 
+def score_result(player_cards, dealer_cards, score)
+  result = detect_result(player_cards, dealer_cards)
+  case result
+  when :player_busted
+    score[:dealer] += 1
+  when :dealer_busted
+    score[:player] += 1
+  when :player
+    score[:player] += 1
+  when :dealer
+    score[:dealer] += 1
+  when :tie
+    score[:ties] += 1
+  end    
+end
+
+def display_score(score)
+  prompt "Dealer Wins: #{score[:dealer]}"
+  prompt "Player Wins: #{score[:player]}"
+  prompt "Ties: #{score[:ties]}"
+end
+
 def display_table(player_cards, dealer_cards)
   puts "=============="
   prompt "Dealer has #{dealer_cards}, for a total of: #{total(dealer_cards)}"
   prompt "Player has #{player_cards}, for a total of: #{total(player_cards)}"
   puts "=============="
+end
+
+def display_end_round(player_cards, dealer_cards, score)
+  display_table(player_cards, dealer_cards)
+  display_result(player_cards, dealer_cards)
+  display_score(score)
+end
+
+def display_winner(score)
+  if score[:player] == 5
+    prompt "You are the overall winner!"
+  elsif score[:dealer] == 5
+    prompt "The dealer is the overall winner!"
+  end
+end
+
+def game_over?(score)
+  score[:player] == 5 || score[:dealer] == 5
 end
 
 def play_again?
@@ -83,6 +125,8 @@ def play_again?
   answer = gets.chomp
   answer.downcase.start_with?('y')
 end
+
+score = { player: 0, dealer: 0, ties: 0 }
 
 loop do
   prompt "Welcome to Twenty-One!"
@@ -121,13 +165,13 @@ loop do
     break if player_turn == 's' || busted?(player_cards)
   end
 
-  player_total = total(player_cards)
   if busted?(player_cards)
-    display_table(player_cards, dealer_cards)
-    display_result(player_cards, dealer_cards)
+    score_result(player_cards, dealer_cards, score)
+    display_end_round(player_cards, dealer_cards, score)
+    break if game_over?(score)
     play_again? ? next : break
   else
-    prompt "You stayed at #{player_total}"
+    prompt "You stayed at #{total(player_cards)}"
   end
 
   # dealer turn
@@ -141,21 +185,21 @@ loop do
     prompt "Dealer's cards are now: #{dealer_cards}"
   end
 
-  dealer_total = total(dealer_cards)
   if busted?(dealer_cards)
-    prompt "Dealer total is now: #{dealer_total}"
-    display_table(player_cards, dealer_cards)
-    display_result(player_cards, dealer_cards)
+    score_result(player_cards, dealer_cards, score)
+    display_end_round(player_cards, dealer_cards, score)
+    break if game_over?(score)
     play_again? ? next : break
   else
-    prompt "Dealer stays at #{dealer_total}"
+    prompt "Dealer stays."
   end
 
   # both player and dealer stay - compare cards!
-  display_table(player_cards, dealer_cards)
-  display_result(player_cards, dealer_cards)
-
+  score_result(player_cards, dealer_cards, score)
+  display_end_round(player_cards, dealer_cards, score)
+  break if game_over?(score)
   break unless play_again?
 end
 
+display_winner(score)
 prompt "Thank you for playing Twenty-One! Goodbye."
